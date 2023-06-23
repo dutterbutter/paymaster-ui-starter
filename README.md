@@ -1,4 +1,4 @@
-# Greeter Frontend
+# Paymaster UI Starter Template 
 
 This is a frontend application for the Greeter contract, built with [Next.js](https://nextjs.org/) and deployed on the zkSync Testnet.
 
@@ -7,13 +7,13 @@ This is a frontend application for the Greeter contract, built with [Next.js](ht
 To get started with the project, first clone the repository:
 
 ```
-git clone https://github.com/dutterbutter/nft-paymaster
+git clone git@github.com:dutterbutter/paymaster-ui-starter.git
 ```
 
-Next, navigate to the `apps/greeter-frontend` directory and install the required dependencies:
+Next, install the required dependencies:
 
 ```
-cd apps/greeter-frontend && yarn install
+cd paymaster-ui-starter && yarn install
 ```
 
 ## Running the Application
@@ -30,7 +30,7 @@ This will start the Next.js server on `localhost:3000`.
 
 To change the greeting message, navigate to `localhost:3000` in your web browser. Make sure you have MetaMask set up for the zkSync Testnet.
 
-If you possess one of the six Infinity Stones from the [InfinityStone contract](https://goerli.explorer.zksync.io/address/0x7CDBF2F07F4204Be589888bD480f3761AAE00061), then the transaction fees will be covered by the Stark Industries paymaster.
+If you possess the applicable NFT then the transaction fees will be covered by the paymaster.
 
 Enter a new greeting message and submit it by clicking the "Change greeting" button.
 
