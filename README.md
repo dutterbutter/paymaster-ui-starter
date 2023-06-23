@@ -1,4 +1,4 @@
-# Paymaster UI Starter Template 
+# Paymaster UI Starter Template
 
 This is a frontend application for the Greeter contract, built with [Next.js](https://nextjs.org/) and deployed on the zkSync Testnet.
 

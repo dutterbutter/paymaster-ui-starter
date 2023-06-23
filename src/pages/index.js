@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import useWeb3 from "./hooks/useWeb3";
-import useGreeting from "./hooks/useGreeting";
-import useNFTBalance from "./hooks/useNFTBalance";
-import useAccountChanges from "./hooks/useAccountChanges";
-import { formatAddress, updateGreeting, updateNFTBalance } from "./utils";
-import GreetingComponent from "./components/GreetingComponent";
-import InputComponent from "./components/InputComponent";
-import LoadingComponent from "./components/LoadingComponent";
+import useWeb3 from "../hooks/useWeb3";
+import useGreeting from "../hooks/useGreeting";
+import useNFTBalance from "../hooks/useNFTBalance";
+import useAccountChanges from "../hooks/useAccountChanges";
+import { formatAddress, updateGreeting, updateNFTBalance } from "../utils";
+import Greeting from "../components/Greeting";
+import Input from "../components/Input";
+import Loading from "../components/Spinner";
 
 const Home = () => {
-  const { provider, signer, contractInstance, NFTcontractInstance } = useWeb3();
-  const [greeting, setGreeting] = useState("");
+  const {
+    provider,
+    signer,
+    contractInstance,
+    NFTcontractInstance,
+    setProvider,
+    setSigner,
+    setContractInstance,
+    setNFTContractInstance,
+  } = useWeb3();
   const [newGreeting, setNewGreeting] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  useGreeting(setGreeting, contractInstance, setLoading);
+  const { greeting, loading } = useGreeting(contractInstance);
   const nftBalance = useNFTBalance(NFTcontractInstance, signer);
   useAccountChanges(
     setProvider,
@@ -112,11 +120,11 @@ const Home = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       {loading ? (
-        <LoadingComponent />
+        <Loading />
       ) : (
         <>
-          <GreetingComponent greeting={greeting} nftBalance={nftBalance} />
-          <InputComponent
+          <Greeting greeting={greeting} nftBalance={nftBalance} />
+          <Input
             newGreeting={newGreeting}
             setNewGreeting={setNewGreeting}
             payForGreetingChange={payForGreetingChange}

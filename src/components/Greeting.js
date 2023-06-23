@@ -6,9 +6,9 @@ const Greeting = ({ greeting }) => {
       <h1 className="text-4xl font-bold mb-4">Greeter says:</h1>
       <p className="text-2xl mb-4">{greeting}👋</p>
       <p className="text-lg mb-4 mx-auto text-center max-w-xl px-4">
-        This is a simple dApp, where if the user possesses one of six Infinity
-        Stones they can interact with the Greeter contract and transaction fees
-        are covered by Stark Industries paymaster.
+        This is a simple dApp, where if the user possesses an applicable NFT
+        they can interact with the Greeter contract and transaction fees are
+        covered by paymaster.
       </p>
     </>
   );
