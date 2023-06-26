@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { utils } from "zksync-web3";
 import { ethers } from "ethers";
 import useWeb3 from "../hooks/useWeb3";
-import useGreeting from "../hooks/useGreeting";
 import useNFTBalance from "../hooks/useNFTBalance";
 import useAccountChanges from "../hooks/useAccountChanges";
-import { formatAddress, updateGreeting, updateNFTBalance } from "../utils";
+import { updateGreeting } from "../utils";
 import Greeting from "../components/Greeting";
 import Input from "../components/Input";
 import Loading from "../components/Spinner";
+import Button from "@/components/Button";
+import { PAYMASTER_CONTRACT_ADDRESS } from "../constants/consts";
 
 const Home = () => {
   const {
@@ -21,22 +23,32 @@ const Home = () => {
     setNFTContractInstance,
   } = useWeb3();
   const [newGreeting, setNewGreeting] = useState("");
-  // const [loading, setLoading] = useState(true);
+  const [greeting, setGreeting] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const { greeting, loading } = useGreeting(contractInstance);
   const nftBalance = useNFTBalance(NFTcontractInstance, signer);
   useAccountChanges(
     setProvider,
     setSigner,
     setContractInstance,
     setNFTContractInstance,
-    () => setGreeting(updateGreeting(contractInstance)),
-    () => setNFTBalance(updateNFTBalance(NFTcontractInstance, signer)),
+    () => setGreeting(updateGreeting(contractInstance))
   );
 
-  const payForGreetingChange = async () => {
-    setLoading(true);
+    // Initial fetch of the greeting
+    useEffect(() => {
+      async function fetchGreeting() {
+        if (contractInstance) {
+          const fetchedGreeting = await contractInstance.greet();
+          setGreeting(fetchedGreeting);
+          setLoading(false);
+        }
+      }
+  
+      fetchGreeting();
+    }, [contractInstance]);
 
+  const payForGreetingChange = async () => {
     if (NFTcontractInstance) {
       try {
         const signerAddress = await signer.getAddress();
@@ -52,21 +64,16 @@ const Home = () => {
           // Wait until the transaction is committed
           const receipt = await txHandle.wait();
           // Update greeting
-          const greeting = await contractInstance.greet();
-          setGreeting(greeting);
-          setNewGreeting("");
-          setLoading(false);
+          const updatedGreeting = await contractInstance.greet();
+          setGreeting(updatedGreeting);
         } else {
           const txHandle = await contractInstance.setGreeting(newGreeting);
           const receipt = await txHandle.wait();
-          const greeting = await contractInstance.greet();
-          setGreeting(greeting);
-          setNewGreeting("");
-          setLoading(false);
+          const updatedGreeting = await contractInstance.greet();
+          setGreeting(updatedGreeting);
         }
       } catch (error) {
         console.error(error);
-        setLoading(false);
       }
     }
   };
@@ -96,7 +103,7 @@ const Home = () => {
         },
       },
     );
-    // const fee = gasPrice.mul(gasLimit.toString());
+    
     const paymasterParams = utils.getPaymasterParams(
       PAYMASTER_CONTRACT_ADDRESS,
       {
@@ -125,10 +132,15 @@ const Home = () => {
         <>
           <Greeting greeting={greeting} nftBalance={nftBalance} />
           <Input
-            newGreeting={newGreeting}
-            setNewGreeting={setNewGreeting}
-            payForGreetingChange={payForGreetingChange}
+            value={newGreeting}
+            onChange={(e) => setNewGreeting(e.target.value)}
           />
+          <Button
+            onClick={() => payForGreetingChange()}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Change greeting
+          </Button>
         </>
       )}
     </div>
